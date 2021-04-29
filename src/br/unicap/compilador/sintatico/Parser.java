@@ -31,11 +31,11 @@ public class Parser {
 		if(token.getType() != Token.TK_CARACTER_especial_fecha_parenteses) {
 			throw new SyntaxException("Fecha parenteses Expected!");
 		}
+		token = scanner.nextToken();
 		bloco();
 	}
 	
 	public void bloco() {
-		token = scanner.nextToken();
 		if(token.getType() != Token.TK_CARACTER_especial_abre_chave) {
 			throw new SyntaxException("Abre chave Expected!");
 		}
@@ -47,42 +47,81 @@ public class Parser {
 	}
 	
 	public void decl_var() {
-		token = scanner.nextToken();
-		
-		if(token.getText().compareTo("int") != 0 && token.getText().compareTo("float") != 0 && token.getText().compareTo("char") != 0) {
-			throw new SyntaxException("Type Expected!");
-		}
-		token = scanner.nextToken();
-		if(token.getType() != Token.TK_IDENTIFIER) {
-			throw new SyntaxException("Identifier Expected!");
-		}
+		tipo();
+		id();
 		token = scanner.nextToken();
 		if(token.getType() != Token.TK_CARACTER_especial_pontovirgula) {
 			throw new SyntaxException("Ponto e virgula Expected!");
 		}
 	}
 	
+	public void tipo() {
+		token = scanner.nextToken();
+		if(token.getText().compareTo("int") != 0 && token.getText().compareTo("float") != 0 && token.getText().compareTo("char") != 0) {
+			throw new SyntaxException("Type Expected!");
+		}
+	}
+	
+	public void id() {
+		token = scanner.nextToken();
+		if(token.getType() != Token.TK_IDENTIFIER) {
+			throw new SyntaxException("Identifier Expected!");
+		}
+	}
+	
 	public void comando() {
 		token = scanner.nextToken();
-		comando_basico();
-		//ou
-		bloco();
-
+		if(token.getText().compareTo("while") == 0) {
+			iteracao();
+		}
+		else if(token.getText().compareTo("if") == 0) {
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_abre_parenteses) {
+				throw new SyntaxException("Abre parentese Expected!");
+			}
+			expr_relacional();
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_fecha_parenteses) {
+				throw new SyntaxException("Fecha parenteses Expected!");
+			}
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_abre_chave) {
+				throw new SyntaxException("Abre chave Expected!");
+			}
+			comando();
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_fecha_chave) {
+				throw new SyntaxException("Fecha chave Expected!");
+			}
+			token = scanner.nextToken();
+			if(token.getText().compareTo("else") != 0) {
+				throw new SyntaxException("Command else Expected!");
+			}
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_abre_chave) {
+				throw new SyntaxException("Abre chave Expected!");
+			}
+			comando();
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_fecha_chave) {
+				throw new SyntaxException("Fecha chave Expected!");
+			}
+		}
+		else {
+			comando_basico();
+		}
 	}
 	
 	public void comando_basico() {
-		token = scanner.nextToken();
 		if(token.getType() == Token.TK_CARACTER_especial_abre_chave) {
 			bloco();
 		}
 		else {
 			atribuicao();
 		}
-
 	}
 	
 	public void atribuicao() {
-		token = scanner.nextToken();
 		if(token.getType() != Token.TK_IDENTIFIER) {
 			throw new SyntaxException("Identifier Expected!");
 		}
@@ -95,6 +134,40 @@ public class Parser {
 		if(token.getType() != Token.TK_CARACTER_especial_pontovirgula) {
 			throw new SyntaxException("Ponto e virgula Expected!");
 		}
+	}
+	
+	public void iteracao() {
+		if(token.getText().compareTo("while") != 0) {
+			throw new SyntaxException("Command while Expected!");
+		}
+		token = scanner.nextToken();
+		if(token.getType() != Token.TK_CARACTER_especial_abre_parenteses) {
+			throw new SyntaxException("Abre parentese Expected!");
+		}
+		token = scanner.nextToken();
+		expr_relacional();
+		token = scanner.nextToken();
+		if(token.getType() != Token.TK_CARACTER_especial_fecha_parenteses) {
+			throw new SyntaxException("Fecha parenteses Expected!");
+		}
+		token = scanner.nextToken();
+		if(token.getType() != Token.TK_CARACTER_especial_abre_chave) {
+			throw new SyntaxException("Abre chave Expected!");
+		}
+		comando();
+		token = scanner.nextToken();
+		if(token.getType() != Token.TK_CARACTER_especial_fecha_chave) {
+			throw new SyntaxException("Fecha chave Expected!");
+		}
+	}
+	
+	public void expr_relacional() {
+		expr_arit();
+		token = scanner.nextToken();
+		if(token.getType() != Token.TK_OPERATOR_aritmetrico_mais && token.getType() != Token.TK_OPERATOR_aritmetrico_menos && token.getType() != Token.TK_OPERATOR_aritmetrico_multiplicacao && token.getType() != Token.TK_OPERATOR_aritmetrico_divisao) {
+			throw new SyntaxException("Operador relacional Expected!");
+		}
+		expr_arit();
 	}
 
 	public void E() {
