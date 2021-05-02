@@ -39,10 +39,11 @@ public class Parser {
 		if(token.getType() != Token.TK_CARACTER_especial_abre_chave) {
 			throw new SyntaxException("Abre chave Expected!");
 		}
+		token = scanner.nextToken();
 		do {
 			decl_var();
 			comando();
-			
+			token = scanner.nextToken();
 		} while(token.getType() != Token.TK_CARACTER_especial_fecha_chave);
 	}
 	
@@ -56,7 +57,6 @@ public class Parser {
 	}
 	
 	public void tipo() {
-		token = scanner.nextToken();
 		if(token.getText().compareTo("int") != 0 && token.getText().compareTo("float") != 0 && token.getText().compareTo("char") != 0) {
 			throw new SyntaxException("Type Expected!");
 		}
@@ -130,7 +130,6 @@ public class Parser {
 			throw new SyntaxException("Atribuidor Expected!");
 		}
 		expr_arit();
-		token = scanner.nextToken();
 		if(token.getType() != Token.TK_CARACTER_especial_pontovirgula) {
 			throw new SyntaxException("Ponto e virgula Expected!");
 		}
@@ -144,9 +143,7 @@ public class Parser {
 		if(token.getType() != Token.TK_CARACTER_especial_abre_parenteses) {
 			throw new SyntaxException("Abre parentese Expected!");
 		}
-		token = scanner.nextToken();
 		expr_relacional();
-		token = scanner.nextToken();
 		if(token.getType() != Token.TK_CARACTER_especial_fecha_parenteses) {
 			throw new SyntaxException("Fecha parenteses Expected!");
 		}
@@ -163,17 +160,69 @@ public class Parser {
 	
 	public void expr_relacional() {
 		expr_arit();
-		token = scanner.nextToken();
 		if(token.getType() != Token.TK_OPERATOR_relacional_diferenca && token.getType() != Token.TK_OPERATOR_relacional_maior && token.getType() != Token.TK_OPERATOR_relacional_maior_igual && token.getType() != Token.TK_OPERATOR_relacional_menor && token.getType() != Token.TK_OPERATOR_relacional_menor_igual && token.getType() != Token.TK_OPERATOR_igual) {
 			throw new SyntaxException("Operador relacional Expected!");
 		}
 		expr_arit();
 	}
+	
+	public void expr_arit() {
+		termo();
+		expr_aritL();
+	}
+	
+	public void expr_aritL() {
+		if (token != null) {
+			if(token.getType() != Token.TK_CARACTER_especial_pontovirgula && token.getType() != Token.TK_OPERATOR_relacional_diferenca && token.getType() != Token.TK_OPERATOR_relacional_maior && token.getType() != Token.TK_OPERATOR_relacional_maior_igual && token.getType() != Token.TK_OPERATOR_relacional_menor && token.getType() != Token.TK_OPERATOR_relacional_menor_igual && token.getType() != Token.TK_OPERATOR_igual && token.getType() != Token.TK_CARACTER_especial_fecha_parenteses) {
+				if(token.getType() != Token.TK_OPERATOR_aritmetrico_mais && token.getType() != Token.TK_OPERATOR_aritmetrico_menos) {
+					throw new SyntaxException("Operador mais ou menos Expected!");
+				}
+				termo();
+				expr_aritL();
+			}
+		}
+	}
+	
+	public void termo() {
+		fator();
+		termoL();
+	}
+	
+	public void termoL() {
+		token = scanner.nextToken();
+		if (token != null) {
+			if(token.getType() == Token.TK_OPERATOR_aritmetrico_multiplicacao || token.getType() == Token.TK_OPERATOR_aritmetrico_divisao) {
+				if(token.getType() != Token.TK_OPERATOR_aritmetrico_multiplicacao && token.getType() != Token.TK_OPERATOR_aritmetrico_divisao) {
+					throw new SyntaxException("Operador multiplicacao ou divisao Expected!");
+				}
+				fator();
+				termoL();
+			}
+		}
+	}
+	
+	public void fator() {
+		token = scanner.nextToken();
+		if(token.getType() == Token.TK_CARACTER_especial_abre_parenteses) {
+			if(token.getType() != Token.TK_CARACTER_especial_abre_parenteses) {
+				throw new SyntaxException("Abre parentese Expected!");
+			}
+			expr_arit();
+			token = scanner.nextToken();
+			if(token.getType() != Token.TK_CARACTER_especial_fecha_parenteses) {
+				throw new SyntaxException("Fecha parenteses Expected!");
+			}
+		}
+		else {
+			if(token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_FLOAT && token.getType() != Token.TK_INTEIRO && token.getType() != Token.TK_CHAR) {
+				throw new SyntaxException("Terminal Expected!");
+			}
+		}
+	}
 
-	public void E() {
+	/*public void E() {
 		T();
 		El();
-
 	}
 
 	public void El() {
@@ -199,5 +248,5 @@ public class Parser {
 		if (token.getType() != Token.TK_OPERATOR_aritmetrico_mais && token.getType() != Token.TK_OPERATOR_aritmetrico_menos && token.getType() != Token.TK_OPERATOR_aritmetrico_divisao && token.getType() != Token.TK_OPERATOR_aritmetrico_multiplicacao) {
 			throw new SyntaxException("Operator Expected, found "+token.getType()+" ("+token.getText()+")");
 		}
-	}
+	} */
 }
