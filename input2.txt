@@ -1,5 +1,16 @@
 int main ( ) { 
-int num12 ; num15 = 2 * 1 + 1 ; 
-float num6 ; while ( 2 * 4 - 3 > 2 / 2 + 2 ) {
-num15 = 2 * 1 + 1 ; }
+int num12 ; num15 = 2 * 1 + 1 ;
+float num6 ;
+for ( num12 = 0 ; 2 * 4 - 3 > 2 / 2 + 2 ; num12 = num12 + 1 ) {
+	if ( 2 * 4 - 3 > 2 / 2 + 2 ) {
+		while ( 2 * 4 - 3 > 2 / 2 + 2 ) {
+			num15 = 2 * 1 + 1 ;
+		}
+	}
+	else {
+		while ( 2 * 4 - 3 > 2 / 2 + 2 ) {
+			num15 = 2 * 1 + 1 ;
+		}
+	}
+}
 }
