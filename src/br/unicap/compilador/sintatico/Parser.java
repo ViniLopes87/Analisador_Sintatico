@@ -4,12 +4,9 @@ import br.unicap.compilador.exceptions.SyntaxException;
 import br.unicap.compilador.lexico.*;
 
 public class Parser {
-	private Scanner scanner; // analisador léxico
-	private Token token;   // o token atual
+	private Scanner scanner;
+	private Token token;
 
-	/* o Parser recebe o analisador léxico como parâmetro no construtor
-	 * pois a cada procedimento invoca-o sob demanda
-	 */
 	public Parser(Scanner scanner) {
 		this.scanner = scanner;
 	}
@@ -303,34 +300,4 @@ public class Parser {
 			}
 		}
 	}
-
-	/*public void E() {
-		T();
-		El();
-	}
-
-	public void El() {
-		token = scanner.nextToken();
-		System.out.println(token);
-		if (token != null) {
-			OP();
-			T();
-			El();
-		}
-	}
-
-	public void T() {
-		token = scanner.nextToken();
-		System.out.println(token);
-		if (token.getType() != Token.TK_IDENTIFIER && token.getType() != Token.TK_INTEIRO && token.getType() != Token.TK_FLOAT) {
-			throw new SyntaxException("ID or NUMBER or FLOAT Expected!, found "+token.getType()+" ("+token.getText()+")");
-		}
-
-	}
-
-	public void OP() {
-		if (token.getType() != Token.TK_OPERATOR_aritmetrico_mais && token.getType() != Token.TK_OPERATOR_aritmetrico_menos && token.getType() != Token.TK_OPERATOR_aritmetrico_divisao && token.getType() != Token.TK_OPERATOR_aritmetrico_multiplicacao) {
-			throw new SyntaxException("Operator Expected, found "+token.getType()+" ("+token.getText()+")");
-		}
-	} */
 }
